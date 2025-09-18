@@ -10,7 +10,7 @@ const Dashboard = async () => {
   const isAdmin = session?.user?.role == "ADMIN";
 
   return (
-    <div>Welcome {isAdmin ? "Admin" : "User"}!</div>
+    <div>Welcome, {isAdmin ? "Admin" : "User"}!</div>
   )
 }
 
