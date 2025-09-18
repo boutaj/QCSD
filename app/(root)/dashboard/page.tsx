@@ -5,7 +5,7 @@ const Dashboard = async () => {
   
   const session = await auth()
 
-  if (!session) return redirect('/');
+  if (!session?.user) redirect("/login");
 
   const isAdmin = session?.user?.role == "ADMIN";
 
