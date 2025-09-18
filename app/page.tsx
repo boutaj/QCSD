@@ -1,10 +1,31 @@
 import UpComingEvents from "@/components/sections/carousel";
 import LatestHighlights from "@/components/sections/card";
 import Hero from "@/components/sections/hero";
-import {events, highlights} from "@/mock-data"
+import { highlights} from "@/mock-data"
 import { auth } from "@/auth";
+import { EventItem } from "@/components/interface";
+import { prisma } from "@/lib/db";
+
+const getUpComingEvents = async () => {
+  
+  const events: EventItem[] = (await prisma.events.findMany({
+    orderBy: {startDate: "asc"},
+    take: 3,
+  })).map(e => ({
+      id: String(e.id),   
+      title: e.title,
+      image: e.image,
+      startDate: e.startDate,
+      endDate: e.endDate,
+      location: e.location,
+      description: e.description,
+  }));
+
+  return events;
+};
 
 const HomePage = async () => {
+
   return (
     <>     
         <div className="flex justify-center flex-col">
@@ -14,7 +35,7 @@ const HomePage = async () => {
             Upcoming Events
           </h2>
           <section className="sm:px-6 mb-6 lg:px-8">
-            <UpComingEvents items={events} />
+            <UpComingEvents items={await getUpComingEvents()} />
           </section>
           <h2 className="text-2xl md:text-3xl font-semibold text-center tracking-wide text-gray-900 dark:text-gray-100 my-8">
             Latest Highlights

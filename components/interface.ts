@@ -1,14 +1,6 @@
 // ** CAROUSEL ** //
-export interface UpComingEventsT {
-  id: string | number;
-  title: string;
-  imageSrc: string;
-  category?: string;
-  dateISO?: string;
-};
-
 export interface CarouselProps {
-  items: UpComingEventsT[];
+  items: EventItem[];
   className?: string;
   aspect?: string;
   autoPlayMs?: number;
@@ -43,8 +35,11 @@ export interface Leader {
 export interface EventItem {
   id: string;
   title: string;
-  start: string | Date;
-  end?: string | Date;
+  image?: string;
+  startDate: string | Date;
+  endDate?: string | Date;
   location?: string;
-  desc?: string;
+  description?: string;
+  code?: string;
+  points?: number;
 };

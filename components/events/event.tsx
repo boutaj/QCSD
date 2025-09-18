@@ -18,7 +18,7 @@ const EventCalendar = ({events, session}: {events: EventItem[], session: Session
 
   const items = useMemo(() => 
       events
-      .map(e => ({ ...e, start: new Date(e.start), end: e.end ? new Date(e.end) : undefined }))
+      .map(e => ({ ...e, start: new Date(e.startDate), end: e.endDate ? new Date(e.endDate) : undefined }))
       .toSorted((a, b) => +a.start - +b.start),
     [events]
   );
@@ -66,7 +66,7 @@ const EventCalendar = ({events, session}: {events: EventItem[], session: Session
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
                 {ev.location && <div>{ev.location}</div>}
-                {(ev.desc && session ) && (
+                {(ev.description && session ) && (
                   <div className="pt-3">
                     <Dialog>
                       <DialogTrigger asChild>
@@ -82,7 +82,7 @@ const EventCalendar = ({events, session}: {events: EventItem[], session: Session
                           </div>
                           <hr />
                           <DialogDescription>
-                            {ev.desc}
+                            {ev.description}
                           </DialogDescription>
                           <Input placeholder="Enter your invitation code..." />
                           <Button variant="outline" size="sm" className="w-full cursor-pointer">
@@ -164,10 +164,10 @@ const EventCalendar = ({events, session}: {events: EventItem[], session: Session
                                   <div className="mt-1 text-sm text-muted-foreground">
                                       {formatDay(eDate(ev.start))} • {formatTimeRange(ev.start, ev.end ? ev.end : undefined)}
                                   </div>
-                                  {(ev.desc && session) && (
+                                  {(ev.description && session) && (
                                     <>
                                       <DialogDescription>
-                                        {ev.desc}
+                                        {ev.description}
                                       </DialogDescription>
                                       <Input placeholder="Enter your invitation code..." />
                                       <Button variant="outline" size="sm" className="w-full cursor-pointer">

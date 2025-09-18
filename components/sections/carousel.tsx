@@ -8,6 +8,8 @@ import Autoplay from "embla-carousel-autoplay";
 
 const UpComingEvents = ({items}: CarouselProps) => {
 
+  console.log(items)
+
   const [api, setApi]     = useState<CarouselApi | null>(null);
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState(0);
@@ -44,7 +46,7 @@ const UpComingEvents = ({items}: CarouselProps) => {
                 <div className="group block h-full w-full focus:outline-none">
                   <div className="absolute inset-0">
                     <Image
-                      src={item.imageSrc}
+                      src={item.image ?? ""}
                       alt={item.title}
                       fill
                       sizes="100vw"
@@ -55,18 +57,18 @@ const UpComingEvents = ({items}: CarouselProps) => {
                   </div>
                   <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 text-white">
                     <div className="flex items-center gap-3 mb-3">
-                      {item.category ? (
+                      {item.location ? (
                         <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur">
-                          {item.category}
+                          {item.location}
                         </span>
                       ) : null}
-                      {item.dateISO ? (
+                      {item.startDate ? (
                         <time
                           className="text-xs text-white/80"
-                          dateTime={item.dateISO}
+                          dateTime={item.startDate as string}
                           suppressHydrationWarning
                         >
-                          {new Date(item.dateISO).toLocaleDateString()}
+                          {new Date(item.startDate).toLocaleDateString()}
                         </time>
                       ) : null}
                     </div>
