@@ -10,7 +10,7 @@ const FooterSection = () => {
           <FooterContent>
             <FooterColumn className="col-span-2 hidden sm:block sm:col-span-3 md:col-span-1">
               <div className="flex items-center gap-2">
-                <Logo />
+                <Logo width={33} height={33} />
                 <h3 className="text-xl font-bold">QCSD</h3>
               </div>
             </FooterColumn>
