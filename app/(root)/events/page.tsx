@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import EventCalendar from "@/components/events/event";
-import { sampleEvents } from "@/mock-data";
 import { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { EventItem } from "@/components/interface";
