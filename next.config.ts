@@ -2,11 +2,11 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: ["placehold.co", "picsum.photos"]
-      },
+      { protocol: "https", hostname: "placehold.co" },
+      { protocol: "https", hostname: "picsum.photos" },
     ],
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; img-src 'self' https: data:; media-src 'none'; script-src 'none'; sandbox;",
   },
   eslint: {
     // Don't block production builds on ESLint errors
