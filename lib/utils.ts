@@ -35,7 +35,7 @@ export const monthTitleFmt = new Intl.DateTimeFormat(LOCALE, {
 export const shortTime = (d: Date) => new Intl.DateTimeFormat(LOCALE, {
   hour: "2-digit",
   minute: "2-digit",
-  hour12: false,
+  hour12: true,
   timeZone: TIME_ZONE,
 }).format(d);
 
