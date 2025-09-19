@@ -43,3 +43,16 @@ export interface EventItem {
   code?: string;
   points?: number;
 };
+
+// ** Contact Us **//
+export interface ContactActionState {
+  messages: string[];
+  data: { name: string; email: string; subject: string; message: string } | null;
+  success: boolean;
+};
+
+// ** Sign Us **//
+export interface AuthActionState {
+  messages: string[];
+  data: { username?: string; email: string; password: string} | null;
+};

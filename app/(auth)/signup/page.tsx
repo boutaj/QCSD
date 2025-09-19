@@ -6,6 +6,7 @@ import { auth, signIn } from "@/auth";
 import { prisma } from "@/lib/db";
 import bcryptjs from 'bcryptjs';
 import { redirect } from "next/navigation";
+import { AuthActionState } from "@/components/interface";
 
 export const metadata: Metadata = {
   title: "Create account",
@@ -18,67 +19,52 @@ const signUpValidation = z.object({
   password: z.string().min(6, "Your password is too short. Please use at least 6 characters"),
 })
 
-const signUpHandler = async (initialState: any, FormData: FormData) => {
+const signUpHandler = async (initialState: any, FormData: FormData): Promise<AuthActionState> => {
   'use server';
 
-  const messages: string[] = [];
-
   const data = {
-      username: FormData.get('username'),
-      email:    FormData.get('email'),
-      password: FormData.get('password'),
+      username: (FormData.get('username') as string) ?? "",
+      email:    (FormData.get('email')    as string) ?? "",
+      password: (FormData.get('password') as string) ?? "",
   };
 
-  try {
-    
-    // Data validation
-    const parsedData = signUpValidation.parse(data);
-    
-    // Check if the user exist
-    const existing = await prisma.user.findFirst({
+  // Data validation
+  const parsedData = signUpValidation.safeParse(data);
+  if(!parsedData.success) {
+    return {
+      messages: parsedData.error.issues.map((i) => i.message),
+      data,
+    };
+  }
+
+  // Check if the user exist
+  const existing = await prisma.user.findFirst({
       where: {
         OR: [
-          { email: parsedData.email },
-          { username: parsedData.username },
+          { email: parsedData.data.email },
+          { username: parsedData.data.username },
         ],
       }
-    });
+  });
 
-    if (existing) {
-      messages.push("This account already exist!");
-      return {messages, parsedData};
-    }
+  if (existing) {
+      return {messages: ["This account already exist"], data};
+  }
 
-    // Hash password & create user in the database
-    parsedData.password = await bcryptjs.hash(parsedData.password, 8);
+  // Hash password & create user in the database
+  parsedData.data.password = await bcryptjs.hash(parsedData.data.password, 8);
     const create = await prisma.user.create({
-      data: parsedData
-    });
+      data: parsedData.data
+  });
 
-    // Sign in automaticly
-    return await signIn("credentials", {
+  // Sign in automaticly
+  return await signIn("credentials", {
       userId: String(create?.id),
       username: create?.username,
       email: create?.email,
       role: create?.role,
       redirectTo: "/dashboard",
-    });
-    
-  } catch (error) {
-    
-    if(error instanceof z.ZodError) {
-  
-      error.issues.map(error => {
-        messages.push(error.message);
-      })
-
-    } else {
-      throw error;
-    }
-
-  }
-  
-  return {messages, data};
+  });
 };
 
 const Signup = async () => {

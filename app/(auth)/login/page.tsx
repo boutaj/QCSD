@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import bcryptjs from 'bcryptjs';
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
+import { AuthActionState } from "@/components/interface";
 
 export const metadata: Metadata = {
   title: "Login | QCSD",
@@ -17,56 +18,44 @@ const loginValidation = z.object({
   password: z.string().nonempty("You forgot to enter your password"),
 });
 
-const loginHandler = async (initialState: any, FormData: FormData) => {
+const loginHandler = async (initialState: any, FormData: FormData): Promise<AuthActionState> => {
   'use server';
 
-  const messages: string[] = [];
-
   const data = {
-      email:    FormData.get('email'),
-      password: FormData.get('password'),
+      email:    (FormData.get('email')    as string) ?? "",
+      password: (FormData.get('password') as string) ?? "",
   };
   
-  try {
-    
-    // Data validation
-    const parsedData = loginValidation.parse(data);
-
-    // Find the account in the db
-    const account = await prisma.user.findUnique({
-      where: {email: parsedData.email}
-    });
-
-    // Check password hash
-    const hash = account?.password ?? "";
-    if(await bcryptjs.compare(parsedData.password, hash)) {
-
-      // Sign in automaticly
-      return await signIn("credentials", {
-          userId: String(account?.id),
-          username: account?.username,
-          email: account?.email,
-          role: account?.role,
-          redirectTo: "/dashboard",
-      });
-
-    } else {
-      messages.push("Your email or password is wrong!");
-    }
-
-  } catch (error: any) {
-
-    if(error instanceof z.ZodError) {
-  
-      error.issues.map(error => {
-        messages.push(error.message);
-      })
-    } else {
-      throw error;
-    }
+  // Data validation
+  const parsedData = loginValidation.safeParse(data);
+  if(!parsedData.success) {
+    return {
+      messages: parsedData.error.issues.map((i) => i.message),
+      data,
+    };
   }
 
-  return {messages, data};
+  // Find the account in the db
+  const account = await prisma.user.findUnique({
+      where: {email: parsedData.data.email}
+  });
+
+  // Check password hash
+  const hash = account?.password ?? "";
+  const checkHash = await bcryptjs.compare(parsedData.data.password, hash);
+
+  if(checkHash) {
+    // Sign in automaticly
+    return await signIn("credentials", {
+        userId: String(account?.id),
+        username: account?.username,
+        email: account?.email,
+        role: account?.role,
+        redirectTo: "/dashboard",
+    });
+  }
+
+  return {messages: ["Your email or password is wrong!"], data};
 };
 
 const Login = async () => {

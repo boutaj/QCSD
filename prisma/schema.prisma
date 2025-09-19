@@ -47,3 +47,12 @@ model Attendance {
   eventID Int
   attendedAt DateTime @default(now())
 }
+
+model Contact {
+  id Int @id @default(autoincrement())
+  name String
+  email String
+  subject String
+  message String
+  contactedAt DateTime @default(now())
+}

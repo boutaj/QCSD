@@ -7,10 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useActionState } from "react";
 import { ShieldX } from "lucide-react";
+import { AuthActionState } from "../interface";
 
 const SignUpForm = ({serverHandler}: {serverHandler: any}) => {
 
-  const initialState = {messages : [], data: {
+  const initialState: AuthActionState = {messages : [], data: {
     username: '',
     email: '',
     password: '',

@@ -6,6 +6,7 @@ import FooterSection from "@/components/sections/footer";
 import Header from "@/components/sections/header";
 import AuthProvider from "@/components/AuthProvider";
 import { auth } from "@/auth";
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "Home | QCSD",
@@ -24,6 +25,7 @@ const RootLayout = async ({children}: Readonly<{children: ReactNode}>) => {
             </div>
             <hr />
             <FooterSection />
+            <Toaster />
           </ThemeProvider>
         </AuthProvider>
       </body>
