@@ -8,8 +8,6 @@ import Autoplay from "embla-carousel-autoplay";
 
 const UpComingEvents = ({items}: CarouselProps) => {
 
-  console.log(items)
-
   const [api, setApi]     = useState<CarouselApi | null>(null);
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState(0);
