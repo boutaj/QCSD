@@ -3,8 +3,8 @@ import { twMerge } from "tailwind-merge";
 
 export const cn = (...x: ClassValue[]) => twMerge(clsx(x));
 
-export const LOCALE = "en-DE";
-export const TIME_ZONE = "Europe/Berlin";
+export const LOCALE = "en-US";
+export const TIME_ZONE = "America/Los_Angeles";
 
 export const eDate = (d: string | Date) => (d instanceof Date ? d : new Date(d));
 

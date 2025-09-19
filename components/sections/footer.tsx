@@ -1,6 +1,7 @@
 import {Footer, FooterBottom, FooterColumn, FooterContent} from "@/components/ui/footer";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import Logo from "@/components/sections/navbar/logo";
+import Link from "next/link";
 
 const FooterSection = () => {
   return (
@@ -16,12 +17,12 @@ const FooterSection = () => {
             </FooterColumn>
             <FooterColumn>
               <h3 className="text-md pt-1 font-semibold">Links</h3>
-              <a href="#" className="text-muted-foreground text-sm">
+              <Link href="/about" className="text-muted-foreground text-sm">
                 About
-              </a>
-              <a href="#" className="text-muted-foreground text-sm">
+              </Link>
+              <Link href="/events" className="text-muted-foreground text-sm">
                 Events
-              </a>
+              </Link>
             </FooterColumn>
             <FooterColumn>
               <h3 className="text-md pt-1 font-semibold">Contact</h3>
