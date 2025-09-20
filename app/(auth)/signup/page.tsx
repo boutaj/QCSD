@@ -37,6 +37,23 @@ const signUpHandler = async (initialState: any, FormData: FormData): Promise<Aut
     };
   }
 
+  // Verify hCaptcha
+  const captcha = await fetch("https://api.hcaptcha.com/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      secret: process.env.CAPTCHA_SECRET!,
+      response: FormData.get("h-captcha-response") as string,
+    }),
+    cache: "no-store",
+  });
+  
+  const cRespone = await captcha.json();
+  if(!cRespone.success)
+  {
+    return {messages: ["Captcha verification failed. Please try again."], data};
+  }
+
   // Check if the user exist
   const existing = await prisma.user.findFirst({
       where: {

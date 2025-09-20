@@ -191,3 +191,11 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* Neatly crop the hCaptcha inner border */
+.hcaptcha-skin iframe {
+  border: 0 !important;
+  width: 300px !important;
+  height: 75px !important;
+  transform: translate(-3px, -3px);
+}

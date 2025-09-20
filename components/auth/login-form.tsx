@@ -5,9 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { ShieldX } from "lucide-react";
 import { AuthActionState } from "../interface";
+import { useTheme } from "next-themes";
+
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const LoginForm = ({serverHandler}: {serverHandler: any}) => {
 
@@ -16,7 +19,20 @@ const LoginForm = ({serverHandler}: {serverHandler: any}) => {
     password: '',
   }};
 
-  const [state, formAction, pending] = useActionState(serverHandler, initialState);
+  const [state, formAction, pending]    = useActionState(serverHandler, initialState);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef                      = useRef<HCaptcha>(null);
+  const prevPending                     = useRef(pending);
+
+  useEffect(() => {
+    if (prevPending.current && !pending) {
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
+    }
+    prevPending.current = pending;
+  }, [pending]);
+
+  const theme = useTheme();
 
   return (
     <Card className="shadow-sm">
@@ -51,6 +67,21 @@ const LoginForm = ({serverHandler}: {serverHandler: any}) => {
               autoComplete="current-password"
               defaultValue={state.data?.password}
             />
+          </div>
+          <div className="grid gap-2">
+            <Label>Prove you're human</Label>
+            <div className="hcaptcha-skin relative rounded-md overflow-hidden">
+              <HCaptcha
+                ref={captchaRef}
+                sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITEKEY!}
+                onVerify={(tok) => setCaptchaToken(tok)}
+                onExpire={()    => setCaptchaToken(null)}
+                onError= {()    => setCaptchaToken(null)}
+                reCaptchaCompat={false}
+                theme={theme.resolvedTheme}
+              />
+            </div>
+            <input type="hidden" name="h-captcha-response" defaultValue={captchaToken ?? ""} />
           </div>
           <Button type="submit" className="w-full cursor-pointer" disabled={pending}>
             Sign in
